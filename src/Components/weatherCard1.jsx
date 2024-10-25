@@ -1,62 +1,81 @@
 import { IconButton, Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-function weatherCard1() {
+import PropTypes from 'prop-types';
+
+function WeatherCard1({ data }) {
+  if (!data) return <div>Loading...</div>; // Handle case when data is not available
+
+  const temp = (data.main?.temp - 273.15).toFixed(0);
+  const feels_like = (data.main?.feels_like - 273.15).toFixed(0);
+  const visibility = data.visibility / 1000;
+  const date = new Date(data.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
   return (
-    <div className="h-80 w-[700px] border-opacity-50 rounded-lg border-2 p-3  ">
+    <div className="h-80 w-[700px] border-opacity-50 rounded-lg border-2 p-3">
       <p className="text-sm font-semibold text-gray-500">Current Weather</p>
-      <p className="text-xs">4:30 PM</p>
-        <div className="flex justify-between items-center -mt-10">
-          <p className="text-9xl font-thin">28°c</p>
-          <div className="flex items-center">
-            <div>
-            <p className="text-2xl font-semibold">Cloudy</p>
-            <p className="text-sm font-semibold">Feels like 35°</p>
-            </div>
-            <img  className="w-fit"src="https://openweathermap.org/img/wn/10d@4x.png" alt="cloudy" />
+      <p className="text-xs">{date}</p>
+      <div className="flex justify-between items-center -mt-10">
+        <p className="text-9xl font-thin">{temp}°C</p>
+        <div className="flex items-center">
+          <div>
+            <p className="text-2xl font-semibold">{data.weather[0]?.main}</p>
+            <p className="text-sm font-semibold">Feels like {feels_like}°</p>
           </div>
+          <img
+            className="w-fit"
+            src={`https://openweathermap.org/img/wn/${data.weather[0]?.icon}@4x.png`}
+            alt={data.weather[0]?.main}
+          />
         </div>
-        <p className="mb-5">Scattered light rain showers are expected. The high will be 30° on this very humid day.</p>
-        <div className="flex justify-around">
-            <div className="flex flex-col items-center mr-10 relative">
-            <Tooltip sx={{position:"absolute",top:"-10px",left:"30px"}} title="Active Users">
-                <IconButton>
-                    <InfoOutlinedIcon />
-                </IconButton>
+      </div>
+      <p className="mb-5">
+        {data.weather[0]?.description.charAt(0).toUpperCase() + data.weather[0]?.description.slice(1)} expected. 
+        The high will be {data.main?.temp_max}° on this very humid day.
+      </p>
+      <div className="flex justify-around">
+        {[
+          { label: 'Wind', value: `${data.wind?.speed} m/sec`, tooltip: 'Wind Speed' },
+          { label: 'Humidity', value: `${data.main?.humidity}%`, tooltip: 'Humidity' },
+          { label: 'Visibility', value: `${visibility} km`, tooltip: 'Visibility Distance' },
+          { label: 'Pressure', value: `${data.main?.pressure} mb`, tooltip: 'Atmospheric Pressure' },
+        ].map((item, index) => (
+          <div key={index} className="flex flex-col items-center mr-10 relative">
+            <Tooltip sx={{ position: 'absolute', top: '-10px', left: '45px' }} title={item.tooltip}>
+              <IconButton>
+                <InfoOutlinedIcon />
+              </IconButton>
             </Tooltip>
-              <p className="text-sm font-semibold">Wind</p>
-              <p className="text-sm font-semibold">7km/h</p>
-            </div>
-            <div className="flex flex-col items-center mr-10 relative">
-               <Tooltip sx={{position:"absolute",top:"-10px",left:"50px"}} title="Active Users">
-                <IconButton>
-                    <InfoOutlinedIcon />
-                </IconButton>
-            </Tooltip>
-              <p className="text-sm font-semibold">Humidity</p>
-              <p className="text-sm font-semibold">70%</p>
-            </div>
-            <div className="flex flex-col items-center mr-10 relative">
-               <Tooltip sx={{position:"absolute",top:"-10px",left:"45px"}} title="Active Users">
-                <IconButton>
-                    <InfoOutlinedIcon />
-                </IconButton>
-            </Tooltip>
-              <p className="text-sm font-semibold">Visibility</p>
-              <p className="text-sm font-semibold">10km</p>
-            </div>
-            <div className="flex flex-col items-center mr-10 relative">
-               <Tooltip sx={{position:"absolute",top:"-10px",left:"45px"}} title="Active Users">
-                <IconButton>
-                    <InfoOutlinedIcon />
-                </IconButton>
-            </Tooltip>
-              <p className="text-sm font-semibold">Pressure</p>
-              <p className="text-sm font-semibold">1000mb</p>
-            </div>
+            <p className="text-sm font-semibold">{item.label}</p>
+            <p className="text-sm font-semibold">{item.value}</p>
           </div>
-        
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default weatherCard1
+WeatherCard1.propTypes = {
+  data: PropTypes.shape({
+    main: PropTypes.shape({
+      temp: PropTypes.number,
+      feels_like: PropTypes.number,
+      temp_max: PropTypes.number,
+      humidity: PropTypes.number,
+      pressure: PropTypes.number,
+    }),
+    wind: PropTypes.shape({
+      speed: PropTypes.number,
+    }),
+    visibility: PropTypes.number,
+    weather: PropTypes.arrayOf(
+      PropTypes.shape({
+        main: PropTypes.string,
+        description: PropTypes.string,
+        icon: PropTypes.string,
+      })
+    ),
+    dt: PropTypes.number,
+  }),
+};
+
+export default WeatherCard1;

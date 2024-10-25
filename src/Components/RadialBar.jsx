@@ -1,11 +1,27 @@
 
 import { ResponsiveRadialBar } from '@nivo/radial-bar'
 import PropTypes from 'prop-types'
-function RadialBar({ data }) {
+  function RadialBar({data}) {
+    const chartData=[
+        {
+            "id":"sea level",
+            "data":[{
+                "x":"sea level",
+                "y": data?.sea_level
+            }]
+        },
+        {
+            "id":"ground level",
+            "data":[{
+                "x":"ground level",
+                "y": data?.grnd_level
+            }]
+        }]
   return (
+    
     <>
     <ResponsiveRadialBar
-        data={data}
+        data={chartData}
         valueFormat=">-.2f"
         padding={0.4}
         cornerRadius={2}
@@ -41,7 +57,11 @@ function RadialBar({ data }) {
   )
 }
 RadialBar.propTypes = {
-  data: PropTypes.array.isRequired,
-}
+        data: PropTypes.shape({
+          sea_level: PropTypes.number,
+          grnd_level: PropTypes.number,
+        }).isRequired,
+      };
+
 
 export default RadialBar

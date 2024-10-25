@@ -21,6 +21,6 @@ export default class RadialChart extends PureComponent {
     );
   }
 }
-RadialBar.propTypes = {
+RadialChart.propTypes = {
     data: PropTypes.array.isRequired,
   }
