@@ -4,7 +4,7 @@ import { PieChart, Pie,Cell, Sector, ResponsiveContainer } from 'recharts';
 const data = [
   { name: 'Summer', value: 20 },
   { name: 'Rainy', value: 9 }]
-const COLORS = [ '#F87A53','#7AB2D3',];
+const COLORS = [ '#F87A53','#7AB2D3'];
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;

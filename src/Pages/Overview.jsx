@@ -25,7 +25,7 @@ function Overview() {
   return (
     <div>
     <div className='flex p-3 w-full border-b border-zinc-900 border-opacity-10 font-semibold sticky top-0'>
-    <img className='font-bold' src="./location.svg" alt="location" /> Kochi,India !
+    <img className='font-bold' src="./location.svg" alt="location" /> Kochi,India 
     </div>
     <div className='p-5'>
       <div className='flex w-full'>

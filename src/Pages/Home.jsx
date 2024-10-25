@@ -15,7 +15,7 @@ function Home() {
     <button   className='mr-2 ml-6 hover-bg-zinc-900 hover-bg-opacity-5 mt-[450px] w-40 px-7 py-0.5 rounded-lg text-sm text-red-700 border'><div className='flex font-semibold' ><LogoutIcon/>Logout</div></button>
 
   </div>
-  <div className="w-full h-screen">
+  <div className="w-full overflow-y-scroll scrollbar">
     {dash}
   </div>
 </div>
