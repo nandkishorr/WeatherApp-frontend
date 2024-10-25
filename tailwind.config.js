@@ -1,10 +1,11 @@
 // const withMT = require("@material-tailwind/react/utils/withMT");
+import tailwindScrollbar from 'tailwind-scrollbar';
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
   },
   plugins: [
-    // require('tailwind-scrollbar')
+    tailwindScrollbar({ nocompatible: true }),
   ],
 }

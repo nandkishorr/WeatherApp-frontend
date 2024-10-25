@@ -5,8 +5,8 @@ import Details from './Details';
 function Home() {
     const [dash,setDash] = useState(<Overview/>)
   return (
-    <div className='flex flex-row'>
-  <div className="w-[15rem] h-screen pr-5 py-5 left-0 top-0 border-r border-zinc-900 border-opacity-10 flex-col items-center flex sticky">
+    <div className='flex flex-row h-screen'>
+  <div className="w-[15rem] pr-5 py-5 left-0 top-0 border-r border-zinc-900 border-opacity-10 flex-col items-center flex sticky">
     <div > <p className="text-3xl font-semibold text-gray-700" >WeatherApp</p>
     </div>
     <div className='mr-16 text-zinc-900 text-opacity-40 text-sm pt-10 p-2'>Dashboard</div>
@@ -15,7 +15,7 @@ function Home() {
     <button   className='mr-2 ml-6 hover-bg-zinc-900 hover-bg-opacity-5 mt-[450px] w-40 px-7 py-0.5 rounded-lg text-sm text-red-700 border'><div className='flex font-semibold' ><LogoutIcon/>Logout</div></button>
 
   </div>
-  <div className="w-full">
+  <div className="w-full h-screen">
     {dash}
   </div>
 </div>
