@@ -9,7 +9,9 @@ function WeatherCard1({ data }) {
   const feels_like = (data.main?.feels_like - 273.15).toFixed(0);
   const visibility = data.visibility / 1000;
   const maxTemp = (data.main?.temp_max - 273.15).toFixed(0);
-  const date = new Date(data.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const date = new Date(data.dt * 1000).toLocaleString([], {hour: '2-digit', minute: '2-digit' 
+  });
+  
 
   return (
     <div className="h-80 w-[700px] border-opacity-50 rounded-lg border-2 p-3">

@@ -1,28 +1,5 @@
 import RadarCharts from "../Components/RadarCharts"
 import axios from 'axios';
- const data1 = [
-      {
-        id: 'Temperature',
-        percentage: 120,
-      },
-      {
-        id: 'Humidity',
-        percentage: 85,
-      },
-      {
-        id: 'Pressure',
-        percentage: 65,
-      },
-      {
-        id: 'Rain',
-        percentage: 65,
-      },
-      {
-        id: 'Wind',
-        percentage: 65,
-      },
-    ];
-
 import AreaCharts from "../Components/AreaCharts";
 import BarCharts from "../Components/BarCharts";
 import LineCharts from "../Components/LineCharts";
@@ -32,12 +9,41 @@ import WeatherCard3 from "../Components/weatherCard3"
 import GaugeChart from "../Components/GaugeChart";
 import { useEffect, useState } from "react";
 
-function Details() {
 
- const [forecast, setForecast] = useState(null); 
+function Details() {
+  function percent_calculate(data) {
+    if (!data || !Array.isArray(data)) {
+      console.error('Invalid data passed to percent_calculate:', data);
+      return []; // Return an empty array or a default value if data is invalid
+    }
+    const maxValues = {
+        hum: 0,pres: 0,temp: 0,wnd: 0,vis: 0,
+    };
+    data.forEach(entry => {
+      maxValues.hum = Math.max(maxValues.hum, entry.hum);
+      maxValues.pres = Math.max(maxValues.pres, entry.pres);
+      maxValues.temp = Math.max(maxValues.temp, parseFloat(entry.temp));
+      maxValues.wnd = Math.max(maxValues.wnd, entry.wnd);
+      maxValues.vis = Math.max(maxValues.vis, parseFloat(entry.vis));
+  });
+  // Define maximum possible values for each parameter
+  const maxPossibleValues = {hum: 100, pres: 1020, temp: 50, wnd: 10, vis: 20, };
+  const percentages = [
+      { id: 'Temperature', percentage: (maxValues.temp / maxPossibleValues.temp) * 100 },
+      { id: 'Humidity', percentage: (maxValues.hum / maxPossibleValues.hum) * 100 },
+      { id: 'Pressure', percentage: (maxValues.pres / maxPossibleValues.pres) * 100 },
+      { id: 'Wind', percentage: (maxValues.wnd / maxPossibleValues.wnd) * 100 },
+      { id: 'Visibility', percentage: (maxValues.vis / maxPossibleValues.vis) * 100 },];
+    return percentages;
+  }
+  
+ const [forecast, setForecast] = useState(null);
+ const [hourly, setHourly] = useState(null); 
+ 
 const fetchForecast=async(city)=>{
+  const url = import.meta.env.VITE_API_URL;
   try {
-    const url = import.meta.env.VITE_API_URL;
+   
     console.log('Fetching weather data for:', city);
     const forecastResponse = await axios.post(`${url}/forecast`,{city:city});
     if (forecastResponse.status === 200) {
@@ -52,69 +58,35 @@ const fetchForecast=async(city)=>{
   } catch (error) {
     console.error('Error fetching current forecast:', error);
   }
+
+  try {
+    console.log('Fetching hourly forecast data for:', city);
+    const HourlyResponse = await axios.post(`${url}/hourly`,{city:city});
+    if (HourlyResponse.status === 200) {
+      const HourlyData = HourlyResponse.data;
+      console.log('Hourly Data:', HourlyData);
+      setHourly(HourlyData);
+    } else if (HourlyResponse.status === 401) {
+      console.error('Unauthorized access. Please check your API key.');
+    } else {
+      console.error(`Error fetching Hourly data: HTTP error! Status: ${HourlyResponse.status}`);
+    }
+  } catch (error) {
+    console.error('Error fetching current Hourly:', error);
+  }
 }  
 useEffect(() => {
   fetchForecast('adoor')
 }, [])
+    const prec = hourly ? hourly[0].prec : null;
+    const cl= hourly ? hourly[0].cld : null;
+    const temp = hourly ? hourly[0].temp : null;
+    const f1 = hourly ? hourly[0].fl : null;
+    const hum = hourly ? hourly[0].hum : null;
+    const vis = hourly ? hourly[0].vis : null;
+    const pres = hourly ? hourly[0].pres : null;
+    const data =  percent_calculate(hourly);
 
-  const data = [
-    {
-      day: 'Day 1',
-      hum: 65,      // humidity
-      pres: 1012,   // pressure
-      temp: 28,     // temperature
-      wnd: 12,      // wind speed
-      vis: 10,      // visibility
-      prec: 0.2,    // precipitation
-      fl: 10,       // feels like
-      cld: 40  ,
-           // cloud cover
-    },
-    {
-      day: 'Day 2',
-      hum: 70,
-      pres: 1015,
-      temp: 36,
-      wnd: 10,
-      vis: 9,
-      prec: 0.0,
-      fl: 27,
-      cld: 35
-    },
-    {
-      day: 'Day 3',
-      hum: 60,
-      pres: 1013,
-      temp: 29,
-      wnd: 14,
-      vis: 10,
-      prec: 1.5,
-      fl: 31,
-      cld: 45
-    },
-    {
-      day: 'Day 4',
-      hum: 68,
-      pres: 1011,
-      temp: 27,
-      wnd: 11,
-      vis: 8,
-      prec: 0.8,
-      fl: 39,
-      cld: 50
-    },
-    {
-      day: 'Day 5',
-      hum: 72,
-      pres: 1016,
-      temp: 25,
-      wnd: 9,
-      vis: 7,
-      prec: 0.3,
-      fl: 26,
-      cld: 55
-    }
-  ];
   return (
     <div className="h-fit p-5 ">
     <div className='flex p-3 w-full border-b border-zinc-900 border-opacity-10 font-semibold '>
@@ -122,17 +94,17 @@ useEffect(() => {
     </div>
        
     <div className="w-full h-full grid grid-cols-4 gap-y-5 mt-5 ">
-      <WeatherCard2 object={<AreaCharts data={data}/>} title='Temperature' />
-      <WeatherCard2 object={<LineCharts data={data} dataKey="fl"/>} title='Feels Like' />
-      <WeatherCard2 object={<BarCharts data={data}/>} title='Humidity' />
-      <WeatherCard2 object={<GaugeChart value='50' />} title='Precipitation' />
-      <WeatherCard2 object={<GaugeChart value='90' />} title='Cloud Cover' />
-      <WeatherCard2 object={<RadialChart data={data} />} title='Visibility' />
-      <WeatherCard2 object={<LineCharts data={data} dataKey="pres"/>} title='Pressure' />
+      <WeatherCard2 object={<AreaCharts data={hourly}/>} title='Temperature' value={temp} unit="°C" />
+      <WeatherCard2 object={<LineCharts data={hourly} dataKey="fl"/>} value={f1} unit="°C"title='Feels Like' />
+      <WeatherCard2 object={<BarCharts data={hourly}/>} title='Humidity'value={hum} unit="%" />
+      <WeatherCard2 object={<GaugeChart value={prec} />} title='Precipitation' value={prec} unit="mm" />
+      <WeatherCard2 object={<GaugeChart value={cl} />} title='Cloud Cover'  value={cl} unit="%" />
+      <WeatherCard2 object={<RadialChart data={hourly} />} title='Visibility'  value={vis} unit="km" />
+      <WeatherCard2 object={<LineCharts data={hourly} dataKey="pres"/>} title='Pressure' value={pres} unit="hPa"/>
       
       
       <div className='w-80 h-60'>
-              <RadarCharts data={data1}/>
+              <RadarCharts data={data}/>
       </div>
       </div>
       <div className="mt-3">

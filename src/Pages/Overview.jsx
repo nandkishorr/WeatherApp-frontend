@@ -19,6 +19,7 @@ function Overview() {
         const weatherData = weatherResponse.data;
         console.log('Weather Data:', weatherData);
         setWeather(weatherData);
+        // localStorage.setItem('weatherData', JSON.stringify(weatherData));
       } else if (weatherResponse.status === 401) {
         console.error('Unauthorized access. Please check your API key.');
       } else {
