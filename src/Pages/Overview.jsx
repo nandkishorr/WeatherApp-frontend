@@ -4,6 +4,7 @@ import InfoCard from '../Components/infoCard';
 import PieCharts from '../Components/PieCharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 function Overview() {
   const [weather, setWeather] = useState('');
@@ -73,10 +74,11 @@ function Overview() {
     fetchWeatherData(selectedCity); 
     OverviewData(selectedCity);
 
-    // const intervalId = setInterval(() => {
-    //   fetchWeatherData(selectedCity);
-    // }, 5 * 60 * 1000); 
-    // return () => clearInterval(intervalId);
+    const intervalId = setInterval(() => {
+      fetchWeatherData(selectedCity);
+      toast.success('Weather data updated successfully');
+    }, 5 * 60 * 1000); 
+    return () => clearInterval(intervalId);
   }, [selectedCity]);
 
   const handleCityChange = (e) => {
@@ -97,6 +99,7 @@ function Overview() {
           <option value="Kolkata">Kolkata, India</option>
         </select>
       </div>
+      <Toaster position='top-right' />
       <div className='p-5'>
         <div className='flex w-full'>
           <WeatherCard1 data={weather} />

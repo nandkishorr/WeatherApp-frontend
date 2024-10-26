@@ -1,9 +1,13 @@
 import { IconButton, Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PropTypes from 'prop-types';
+import toast from 'react-hot-toast';
 
 function WeatherCard1({ data }) {
-  if (!data) return <div>Loading...</div>; // Handle case when data is not available
+  if (!data) {
+    toast.error('Data is not available');
+    return null; // Handle case when data is not available
+  }
 
   const temp = (data.main?.temp - 273.15).toFixed(0);
   const feels_like = (data.main?.feels_like - 273.15).toFixed(0);
@@ -12,7 +16,11 @@ function WeatherCard1({ data }) {
   const date = new Date(data.dt * 1000).toLocaleString([], {hour: '2-digit', minute: '2-digit' 
   });
   
-
+  if (temp > 35) {
+    toast.warning('Temperature is extremely high!');
+  } else if (temp < 22) {
+    toast.info('Temperature is quite low!');
+  }
   return (
     <div className="h-80 w-[700px] border-opacity-50 rounded-lg border-2 p-3">
       <p className="text-sm font-semibold text-gray-500">Current Weather</p>
