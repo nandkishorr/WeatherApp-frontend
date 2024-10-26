@@ -21,7 +21,7 @@ Threshold-Based Alerts: The system monitors weather data for threshold violation
 Weather Forecast and Summaries: Extends functionality to retrieve and display weather forecasts, generating summaries based on predicted weather conditions for proactive weather planning.
 
 ## Repository
-- GitHub Repository of Backend WeatherApp : [WeatherApp-Backend]([[https://github.com/yourusername/your-repository](https://github.com/nandkishorr/RuleEngine-Frontend.git](https://github.com/nandkishorr/WeatherApp-Backend.git)))
+- GitHub Repository of Backend WeatherApp : [WeatherApp-Backend](https://github.com/yourusername/your-repository](https://github.com/nandkishorr/RuleEngine-Frontend.git](https://github.com/nandkishorr/WeatherApp-Backend.git)
 
 ## Prerequisites
 Ensure you have the following installed:
