@@ -23,7 +23,8 @@ npm install
 yarn install
 
 # .env
-REACT_APP_API_URL=http://localhost:3000
+VITE_API_KEY='<your_oper_weather_Api_key>'
+VITE_API_URL=http://localhost:3000
 ```
 ## Project Structure
 ```
