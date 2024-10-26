@@ -1,4 +1,5 @@
 import RadarCharts from "../Components/RadarCharts"
+import axios from 'axios';
  const data1 = [
       {
         id: 'Temperature',
@@ -29,8 +30,33 @@ import RadialChart from "../Components/RadialChart";
 import WeatherCard2 from "../Components/weatherCard2"
 import WeatherCard3 from "../Components/weatherCard3"
 import GaugeChart from "../Components/GaugeChart";
+import { useEffect, useState } from "react";
 
 function Details() {
+
+ const [forecast, setForecast] = useState(null); 
+const fetchForecast=async(city)=>{
+  try {
+    const url = import.meta.env.VITE_API_URL;
+    console.log('Fetching weather data for:', city);
+    const forecastResponse = await axios.post(`${url}/forecast`,{city:city});
+    if (forecastResponse.status === 200) {
+      const forecastData = forecastResponse.data;
+      console.log('forecast Data:', forecastData);
+      setForecast(forecastData);
+    } else if (forecastResponse.status === 401) {
+      console.error('Unauthorized access. Please check your API key.');
+    } else {
+      console.error(`Error fetching forecast data: HTTP error! Status: ${forecastResponse.status}`);
+    }
+  } catch (error) {
+    console.error('Error fetching current forecast:', error);
+  }
+}  
+useEffect(() => {
+  fetchForecast('adoor')
+}, [])
+
   const data = [
     {
       day: 'Day 1',
@@ -110,21 +136,25 @@ function Details() {
       </div>
       </div>
       <div className="mt-3">
-        <p>10 day Forecast</p>
-        <div className="flex w-fit gap-x-2 mt-3">
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-            <WeatherCard3/>
-        </div>
-        
-      </div>
+  <p>10-Day Forecast</p>
+  <div className="flex w-fit gap-x-2 mt-3">
+    {forecast && forecast.length > 0 ? (
+      forecast.map((dayForecast, index) => (
+        <WeatherCard3
+          key={index}
+          day={dayForecast.date}
+          temperature={dayForecast.temp}
+          iconUrl={dayForecast.climateIcon}
+          weatherType={dayForecast.main}
+        />
+      ))
+    ) : (
+      <p>Loading forecast data...</p>
+    )}
+  </div>
+</div>
+
+
       
     </div>
   )
