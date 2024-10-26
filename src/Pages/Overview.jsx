@@ -9,7 +9,8 @@ function Overview() {
   const [weather, setWeather] = useState('');
   const [selectedCity, setSelectedCity] = useState('Kochi'); 
   const [climate, setClimate] = useState('');
-  
+  const [summary, setSummary] = useState('');
+  localStorage.setItem('selectedCity', selectedCity);
   const fetchWeatherData = async (city) => {
     const apiKey = import.meta.env.VITE_API_KEY;
     try {
@@ -30,8 +31,9 @@ function Overview() {
     }
   };
     const OverviewData = async(city) => {
-    try {
       const url = import.meta.env.VITE_API_URL;
+    try {
+      
       console.log('Fetching climate data for:', city);
       const ClimateResponse = await axios.post(`${url}/summary/climate`,{city:city});
       if (ClimateResponse.status === 200) {
@@ -46,6 +48,23 @@ function Overview() {
     } catch (error) {
       console.error('Error fetching current Climate:', error);
     }
+
+    try {
+      console.log('Fetching daily summary data for:', city);
+      const DailySummaryResponse = await axios.post(`${url}/summary`,{city:city});
+      if (DailySummaryResponse.status === 200) {
+        const DailySummaryData = DailySummaryResponse.data;
+        console.log('Daily Summary:', DailySummaryData);
+        setSummary(DailySummaryData);
+      } else if (DailySummaryResponse.status === 401) {
+        console.error('Unauthorized access. Please check your API key.');
+      } else {
+        console.error(`Error fetching DailySummary data: HTTP error! Status: ${DailySummaryResponse.status}`);
+      }
+    } catch (error) {
+      console.error('Error fetching current DailySummary:', error);
+    }
+
   };
 
  
@@ -90,7 +109,7 @@ function Overview() {
             <p className='text-gray-700 font-medium ml-5'>Monthly Overview</p>
             <PieCharts data={climate} />
           </div>
-          <InfoCard />
+          <InfoCard data={summary} />
         </div>
       </div>
     </div>

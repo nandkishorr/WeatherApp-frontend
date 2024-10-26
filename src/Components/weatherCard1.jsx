@@ -40,7 +40,7 @@ function WeatherCard1({ data }) {
           { label: 'Wind', value: `${data.wind?.speed} m/sec`, tooltip: 'Wind Speed' },
           { label: 'Humidity', value: `${data.main?.humidity}%`, tooltip: 'Humidity' },
           { label: 'Visibility', value: `${visibility} km`, tooltip: 'Visibility Distance' },
-          { label: 'Pressure', value: `${data.main?.pressure} mb`, tooltip: 'Atmospheric Pressure' },
+          { label: 'Pressure', value: `${data.main?.pressure}hPa `, tooltip: 'Atmospheric Pressure' },
         ].map((item, index) => (
           <div key={index} className="flex flex-col items-center mr-10 relative">
             <Tooltip sx={{ position: 'absolute', top: '-10px', left: '45px' }} title={item.tooltip}>

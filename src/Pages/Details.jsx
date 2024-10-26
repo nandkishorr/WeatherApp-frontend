@@ -76,7 +76,7 @@ const fetchForecast=async(city)=>{
   }
 }  
 useEffect(() => {
-  fetchForecast('adoor')
+  localStorage.getItem('selectedCity') ? fetchForecast(localStorage.getItem('selectedCity')) : fetchForecast('Kochi');
 }, [])
     const prec = hourly ? hourly[0].prec : null;
     const cl= hourly ? hourly[0].cld : null;
@@ -90,7 +90,7 @@ useEffect(() => {
   return (
     <div className="h-fit p-5 ">
     <div className='flex p-3 w-full border-b border-zinc-900 border-opacity-10 font-semibold '>
-    <img className='font-bold' src="./location.svg" alt="location" /> Kochi,India 
+    <img className='font-bold' src="./location.svg" alt="location" /> {localStorage.getItem('selectedCity')} 
     </div>
        
     <div className="w-full h-full grid grid-cols-4 gap-y-5 mt-5 ">
