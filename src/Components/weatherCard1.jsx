@@ -8,6 +8,7 @@ function WeatherCard1({ data }) {
   const temp = (data.main?.temp - 273.15).toFixed(0);
   const feels_like = (data.main?.feels_like - 273.15).toFixed(0);
   const visibility = data.visibility / 1000;
+  const maxTemp = (data.main?.temp_max - 273.15).toFixed(0);
   const date = new Date(data.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
@@ -30,7 +31,7 @@ function WeatherCard1({ data }) {
       </div>
       <p className="mb-5">
         {data.weather[0]?.description.charAt(0).toUpperCase() + data.weather[0]?.description.slice(1)} expected. 
-        The high will be {data.main?.temp_max}° on this very humid day.
+        The high will be {maxTemp}°c on this very humid day.
       </p>
       <div className="flex justify-around">
         {[

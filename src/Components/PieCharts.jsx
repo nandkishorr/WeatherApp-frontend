@@ -1,10 +1,8 @@
-import{ PureComponent } from 'react';
-import { PieChart, Pie,Cell, Sector, ResponsiveContainer } from 'recharts';
+import { PureComponent } from 'react';
+import { PieChart, Pie, Cell, Sector, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { name: 'Summer', value: 20 },
-  { name: 'Rainy', value: 9 }]
-const COLORS = [ '#F87A53','#7AB2D3'];
+const COLORS = ['#F87A53', '#7AB2D3'];
+
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
@@ -20,7 +18,9 @@ const renderActiveShape = (props) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" >October</text>
+      <text x={cx} y={cy} dy={8} textAnchor="middle">
+        {payload.month}
+      </text>
       <Sector
         cx={cx}
         cy={cy}
@@ -41,7 +41,9 @@ const renderActiveShape = (props) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${payload.name} ${value}`}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">
+        {`${payload.name} ${value}`}
+      </text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
         {`(Rate ${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -50,7 +52,6 @@ const renderActiveShape = (props) => {
 };
 
 export default class PieCharts extends PureComponent {
-
   state = {
     activeIndex: 0,
   };
@@ -62,13 +63,19 @@ export default class PieCharts extends PureComponent {
   };
 
   render() {
+    const { data } = this.props;
+
+    // Ensure data is an array
+    const validData = Array.isArray(data) ? data : [];
+
+    // Render PieChart with validData
     return (
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={400} height={400}>
+        <PieChart>
           <Pie
             activeIndex={this.state.activeIndex}
             activeShape={renderActiveShape}
-            data={data}
+            data={validData}
             cx="50%"
             cy="50%"
             innerRadius={60}
@@ -76,9 +83,11 @@ export default class PieCharts extends PureComponent {
             fill="#8884d8"
             dataKey="value"
             onMouseEnter={this.onPieEnter}
-          >{data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}</Pie>
+          >
+            {validData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
         </PieChart>
       </ResponsiveContainer>
     );

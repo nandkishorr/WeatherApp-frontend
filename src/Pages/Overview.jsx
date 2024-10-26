@@ -7,7 +7,8 @@ import axios from 'axios';
 
 function Overview() {
   const [weather, setWeather] = useState('');
-  const [selectedCity, setSelectedCity] = useState('Kochi'); // Default location
+  const [selectedCity, setSelectedCity] = useState('Kochi'); 
+  const [climate, setClimate] = useState('');
   
   const fetchWeatherData = async (city) => {
     const apiKey = import.meta.env.VITE_API_KEY;
@@ -27,18 +28,44 @@ function Overview() {
       console.error('Error fetching current weather:', error);
     }
   };
+    const OverviewData = async(city) => {
+    try {
+      const url = import.meta.env.VITE_API_URL;
+      console.log('Fetching climate data for:', city);
+      const ClimateResponse = await axios.post(`${url}/summary/climate`,{city:city});
+      if (ClimateResponse.status === 200) {
+        const ClimateData = ClimateResponse.data;
+        console.log('Climate Data:', ClimateData);
+        setClimate(ClimateData);
+      } else if (ClimateResponse.status === 401) {
+        console.error('Unauthorized access. Please check your API key.');
+      } else {
+        console.error(`Error fetching Climate data: HTTP error! Status: ${ClimateResponse.status}`);
+      }
+    } catch (error) {
+      console.error('Error fetching current Climate:', error);
+    }
+  };
+
+ 
 
   useEffect(() => {
-    fetchWeatherData(selectedCity); // Fetch data for default city on initial render
-  }, [selectedCity]); // Refetch whenever `selectedCity` changes
+    fetchWeatherData(selectedCity); 
+    OverviewData(selectedCity);
+
+    // const intervalId = setInterval(() => {
+    //   fetchWeatherData(selectedCity);
+    // }, 5 * 60 * 1000); 
+    // return () => clearInterval(intervalId);
+  }, [selectedCity]);
 
   const handleCityChange = (e) => {
-    setSelectedCity(e.target.value); // Update selected city
+    setSelectedCity(e.target.value); 
   };
 
   return (
     <div>
-      <div className='flex p-3 w-full border-b border-zinc-900 border-opacity-10 font-semibold sticky top-0'>
+      <div className='flex p-3 w-full  border-zinc-900 border-opacity-10 font-semibold sticky top-0'>
         <img className='font-bold' src="./location.svg" alt="location" />
         <select className="font-bold bg-white border-none outline-none" value={selectedCity} onChange={handleCityChange}>
           <option value="Kochi">Kochi, India</option>
@@ -60,7 +87,7 @@ function Overview() {
         <div className='mt-3 flex justify-between items-center'>
           <div className='w-[600px] h-72'>
             <p className='text-gray-700 font-medium ml-5'>Monthly Overview</p>
-            <PieCharts />
+            <PieCharts data={climate} />
           </div>
           <InfoCard />
         </div>
